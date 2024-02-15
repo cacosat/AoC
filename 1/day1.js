@@ -10,16 +10,49 @@ function importTestCases(filenameStr) {
     return testCasesByLine;
 }
 
+function spelledNumToNum (arrayOfStr) {
+    let allNumArray = [];
+    const numMap = {
+        'one': '1',
+        'two': '2',
+        'three': '3',
+        'four': '4',
+        'five': '5',
+        'six': '6',
+        'seven': '7',
+        'eight': '8',
+        'nine': '9'
+    }
+
+    arrayOfStr.forEach((str, index) => {
+        if (typeof str === 'string' && isNaN(str)) {
+            // str is string and not a num, ex: 'one', 'two', etc
+            allNumArray.push(numMap[str]);
+        } else {
+            allNumArray.push(str);
+        }
+    })
+
+    return allNumArray;
+}
+
 function trebuchet(input) {
     let totalSum = 0;
     let inputStrNums = [];
+    // regex for detecting integers (\d) or spelled out nums, 
+    // also with flag g (global search so it doesn't returns just the 1st) and i (case insensitive)
+    let regex = /\d|(one|two|three|four|five|six|seven|eight|nine)/gi
 
     for (let i = 0; i < input.length; i++) {
-        let inputStrArray = input[i].split('');
+        // let inputStrArray = input[i].split(''); // deprecated for part 2
         let nums = [];
         let inputCalibrationValue = ''; // calibration value for each string
 
-        inputStrArray.forEach((char) => !isNaN(char) ? nums.push(char) : ''); // add char to nums if char is num
+        // inputStrArray.forEach((char) => !isNaN(char) ? nums.push(char) : ''); // deprecated for part 2
+        nums = input[i].match(regex);
+        
+        // convert spelled out nums to str nums
+        nums = spelledNumToNum(nums);
         
         console.log(`nums array for iteration ${i}: ${nums}`)
 
@@ -27,75 +60,25 @@ function trebuchet(input) {
             // retrieve first and last index
             inputCalibrationValue = nums[0] + nums[nums.length - 1];
         } else if (nums.length === 1) {
-            // resulting num must be 2 digits, if theres only one it's the same digit twice
+            // resulting num must be 2 digits, if theres only one it's the same digit
             inputCalibrationValue = nums[0] + nums[0];
         } else {
             // nums.length === 0 || 2; concatenate all and push to inputStrNums
             nums.forEach(num => inputCalibrationValue += num);
         }
-
+        console.log(`calibration value for i=${i} -> ${inputCalibrationValue}`)
         inputStrNums.push(inputCalibrationValue);
     }
-    
-    console.log(`nums registered from array: ${inputStrNums}`);
-    console.log(`nums length: ${inputStrNums.length}`);
 
-    totalSum = inputStrNums.reduce((accumulator, current) => accumulator + +current, 0)
+    totalSum = inputStrNums.reduce((accumulator, current) => {
+        console.log(`accumulator = ${accumulator} / current = ${current}`)
+        return accumulator + +current
+    }, 0)
 
     console.log(`total sum: ${totalSum}`)
 }
 
 
 const testCases = importTestCases('test.txt');
-let total = 0;
 
 trebuchet(testCases);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function trebuchet(inputStr) { // combine first and last digit
-//     let sumOfElements = '';
-//     let totalSum = 0;
-
-//     let strArray = inputStr.split('');
-//     // filter array for numbers
-//     // let initialValue = '';
-//     let strArrayFiltered = strArray.filter((item, index) => !isNaN(item));
-//     if (strArrayFiltered.length <= 2) {
-//         sumOfElements = strArrayFiltered.reduce((acumulator, current) => acumulator + current);
-//         totalSum += +sumOfElements;
-//     } else {
-//         sumOfElements = strArrayFiltered.slice(0, 2).reduce((acumulator, current) => acumulator + current);
-//         totalSum += +sumOfElements;
-//     }
-
-//     // console.log('Start ------------------------------');
-//     // console.log('Input: ' + inputStr);
-//     // console.log('strArray: ' + strArray);
-//     // console.log('Filtered: ' + strArrayFiltered);
-//     // console.log('result -> ' + sumOfElements)
-//     // console.log('');
-
-//     return +sumOfElements;
-// }
