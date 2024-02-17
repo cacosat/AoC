@@ -22,7 +22,7 @@ const testCases = importTestCases('test.txt');
 
 function gamesArrayToGamesObj(gamesArray) {
     let gamesObj = {}; // {id: {red: X, green: X, blue: X}, ...}
-    gamesArray.forEach((gameStr, index) => {
+    gamesArray.forEach((gameStr, index) => {git 
         let currentId = index + 1;
         gamesObj[currentId] = {red: 0, green: 0, blue: 0}
         let cubes = gameStr.split(':')[1].split(';'); // array of cubes shown each game
@@ -39,17 +39,36 @@ function gamesArrayToGamesObj(gamesArray) {
             });
         });
     });
-    console.log(gamesObj)
+    // console.log(gamesObj)
     return gamesObj;
 }
 
 gamesArrayToGamesObj(testCases);
 
-function possibleGames(cubesInBag) {
-    let games;
+function possibleGames(currentCubes, limit) {
+    let games = [];
     let idSum = 0;
     // determine possible games given the cubesInBag
     // Add up the ID's of the possible games
 
-    return [games, idSum]
+    let gamesObj = gamesArrayToGamesObj(testCases);
+
+    Object.keys(gamesObj).forEach((key) => {
+        // check if each obj (game) surpases limit, then if they do take it out
+        if (gamesObj[key].hasOwnProperty('red') && limit.hasOwnProperty('red')) {
+            if (gamesObj[key]['red'] > limit['red'] && 
+                gamesObj[key]['green'] > limit['green'] &&
+                gamesObj[key]['blue'] > limit['blue']) {
+                games.push({[key]: gamesObj[key]})
+                idSum += +key;
+            }
+        }
+    });
+
+    console.log(games);
+    console.log(idSum)
+
+    return [games, idSum];
 };
+
+possibleGames(testCases, cubesInBag);
