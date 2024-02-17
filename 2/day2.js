@@ -5,21 +5,51 @@
 // Part 1: figure out what games are possible with
 // 12 red, 13 green, 14 blue; and sum it's indices
 
-// modules 
 const fs = require('fs');
 const path = require('path');
 
+const cubesInBag = {'red': 12, 'green': 13, 'blue': 14}
+
 function importTestCases(fileName) {
-    /*
-    use path to get path to directory (__dirname)
-    retrieve test cases with fs and split into array
-    return test cases
-    */
     const filePath = path.resolve(__dirname, fileName);
     const data = fs.readFileSync(filePath, 'utf-8');
     const testCases = data.split(/\r?\n/);
-    console.log(testCases);
+
     return testCases;
 }
 
-importTestCases('test.txt')
+const testCases = importTestCases('test.txt');
+
+function gamesArrayToGamesObj(gamesArray) {
+    let gamesObj = {}; // {id: {red: X, green: X, blue: X}, ...}
+    gamesArray.forEach((gameStr, index) => {
+        let currentId = index + 1;
+        gamesObj[currentId] = {red: 0, green: 0, blue: 0}
+        let cubes = gameStr.split(':')[1].split(';'); // array of cubes shown each game
+        cubes.forEach((cubeRound) => {
+            const singleCubesArray = cubeRound.split(',');
+            singleCubesArray.forEach((cube) => {
+                if (cube.includes('red')) {
+                    gamesObj[currentId].red += parseInt(cube)
+                } else if (cube.includes('green')) {
+                    gamesObj[currentId].green += parseInt(cube)
+                } else if (cube.includes('blue')) {
+                    gamesObj[currentId].blue += parseInt(cube)
+                }
+            });
+        });
+    });
+    console.log(gamesObj)
+    return gamesObj;
+}
+
+gamesArrayToGamesObj(testCases);
+
+function possibleGames(cubesInBag) {
+    let games;
+    let idSum = 0;
+    // determine possible games given the cubesInBag
+    // Add up the ID's of the possible games
+
+    return [games, idSum]
+};
