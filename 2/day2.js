@@ -22,7 +22,7 @@ const testCases = importTestCases('test.txt');
 
 function gamesArrayToGamesObj(gamesArray) {
     let gamesObj = {}; // {id: {red: X, green: X, blue: X}, ...}
-    gamesArray.forEach((gameStr, index) => {git 
+    gamesArray.forEach((gameStr, index) => {
         let currentId = index + 1;
         gamesObj[currentId] = {red: 0, green: 0, blue: 0}
         let cubes = gameStr.split(':')[1].split(';'); // array of cubes shown each game
@@ -39,11 +39,9 @@ function gamesArrayToGamesObj(gamesArray) {
             });
         });
     });
-    // console.log(gamesObj)
+    console.log(gamesObj)
     return gamesObj;
 }
-
-gamesArrayToGamesObj(testCases);
 
 function possibleGames(currentCubes, limit) {
     let games = [];
@@ -51,22 +49,32 @@ function possibleGames(currentCubes, limit) {
     // determine possible games given the cubesInBag
     // Add up the ID's of the possible games
 
-    let gamesObj = gamesArrayToGamesObj(testCases);
+    let gamesObj = gamesArrayToGamesObj(currentCubes);
+    // {
+    //     '1': { red: 5, green: 4, blue: 9 },
+    //     '2': { red: 1, green: 6, blue: 6 },
+    //     '3': { red: 25, green: 26, blue: 11 },
+    //     '4': { red: 23, green: 7, blue: 21 },
+    //     '5': { red: 7, green: 5, blue: 3 }
+    // }
 
     Object.keys(gamesObj).forEach((key) => {
         // check if each obj (game) surpases limit, then if they do take it out
-        if (gamesObj[key].hasOwnProperty('red') && limit.hasOwnProperty('red')) {
-            if (gamesObj[key]['red'] > limit['red'] && 
-                gamesObj[key]['green'] > limit['green'] &&
-                gamesObj[key]['blue'] > limit['blue']) {
-                games.push({[key]: gamesObj[key]})
-                idSum += +key;
-            }
-        }
+        console.log('\n');
+        console.log('key: ' + key);
+        console.log(`color red for key ${key} = ${gamesObj[key]['red']}`);
+        console.log(`limit for color red = ${limit['red']}`);
+        console.log(gamesObj[key]['red'] > limit['red'] );
+        if ((gamesObj[key]['red'] > limit['red']) &&
+            (gamesObj[key]['green'] > limit['green']) &&
+            (gamesObj[key]['blue'] > limit['blue'])) {
+            games.push({[key]: gamesObj[key]})
+            idSum += +key;
+        } 
     });
 
     console.log(games);
-    console.log(idSum)
+    console.log(`total sum = ${idSum}`)
 
     return [games, idSum];
 };
