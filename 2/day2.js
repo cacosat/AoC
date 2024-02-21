@@ -23,7 +23,7 @@ const testCases = importTestCases('test.txt');
 function gamesArrayToGamesObj(gamesArray) {
     let gamesObj = {}; // {id: {red: X, green: X, blue: X}, ...}
     gamesArray.forEach((gameStr, index) => {
-        let currentId = index + 1;
+        let currentId = gameStr.match(/\d+/)[0];
         gamesObj[currentId] = {red: 0, green: 0, blue: 0}
         let cubes = gameStr.split(':')[1].split(';'); // array of cubes shown each game
         cubes.forEach((cubeRound) => {
@@ -64,15 +64,15 @@ function possibleGames(currentCubes, limit) {
         console.log('key: ' + key);
         console.log(`color red for key ${key} = ${gamesObj[key]['red']}`);
         console.log(`limit for color red = ${limit['red']}`);
-        console.log(gamesObj[key]['red'] > limit['red'] );
-        if ((gamesObj[key]['red'] > limit['red']) &&
-            (gamesObj[key]['green'] > limit['green']) &&
-            (gamesObj[key]['blue'] > limit['blue'])) {
+        if ((gamesObj[key]['red'] < limit['red']) &&
+            (gamesObj[key]['green'] < limit['green']) &&
+            (gamesObj[key]['blue'] < limit['blue'])) {
             games.push({[key]: gamesObj[key]})
             idSum += +key;
         } 
     });
 
+    console.log('');
     console.log(games);
     console.log(`total sum = ${idSum}`)
 
