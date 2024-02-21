@@ -50,16 +50,12 @@ function possibleGames(currentCubes, limit) {
     // Add up the ID's of the possible games
 
     let gamesObj = gamesArrayToGamesObj(currentCubes);
-    // {
-    //     '1': { red: 5, green: 4, blue: 9 },
-    //     '2': { red: 1, green: 6, blue: 6 },
-    //     '3': { red: 25, green: 26, blue: 11 },
-    //     '4': { red: 23, green: 7, blue: 21 },
-    //     '5': { red: 7, green: 5, blue: 3 }
-    // }
 
     Object.keys(gamesObj).forEach((key) => {
         // check if each obj (game) surpases limit, then if they do take it out
+
+        // TODO -> fix evaluating each set SEPARATELY
+
         console.log('\n');
         console.log('key: ' + key);
         console.log(`color red for key ${key} = ${gamesObj[key]['red']}`);
