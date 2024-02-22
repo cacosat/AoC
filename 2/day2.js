@@ -21,24 +21,34 @@ function importTestCases(fileName) {
 const testCases = importTestCases('test.txt');
 
 function gamesArrayToGamesObj(gamesArray) {
-    let gamesObj = {}; // {id: {red: X, green: X, blue: X}, ...}
+    let gamesObj = {}; // resulting structure = {id: {setN: {red: X, green: X, blue: X}}, ...}
+
     gamesArray.forEach((gameStr, index) => {
-        let currentId = gameStr.match(/\d+/)[0];
-        gamesObj[currentId] = {red: 0, green: 0, blue: 0}
-        let cubes = gameStr.split(':')[1].split(';'); // array of cubes shown each game
-        cubes.forEach((cubeRound) => {
-            const singleCubesArray = cubeRound.split(',');
-            singleCubesArray.forEach((cube) => {
-                if (cube.includes('red')) {
-                    gamesObj[currentId].red += parseInt(cube)
-                } else if (cube.includes('green')) {
-                    gamesObj[currentId].green += parseInt(cube)
-                } else if (cube.includes('blue')) {
-                    gamesObj[currentId].blue += parseInt(cube)
-                }
-            });
+        let gameId = gameStr.match(/\d+/)[0];
+        // gamesObj[gameId] = {}; // empty object to fit sets of the game
+        let setsPerGame = gameStr.split(':')[1].split(';'); // array of sets for each game (cubes shown)
+        setsPerGame.forEach((set, index) => {
+            const cubesPerSet = set.split(',');
+            if (!gamesObj[gameId]) {
+                gamesObj[gameId] = {}
+            }
+            gamesObj[gameId][index] = cubesPerSet;
+            console.log(`set index = ${index} / set = ${set}`)
+            // cubesPerSet.forEach((cube) => {
+
+            //     console.log(`set = ${set}; cubesperset = ${cubesPerSet}; currentCube = ${cube}; id = ${gameId}`)
+                
+            //     // if (cube.includes('red')) {
+            //     //     gamesObj[gameId] += 0;
+            //     // } else if (cube.includes('green')) {
+            //     //     gamesObj[gameId] += 0;
+            //     // } else if (cube.includes('blue')) {
+            //     //     gamesObj[gameId] += 0;
+            //     // }
+            // });
         });
     });
+    console.log(`gamesObj`)
     console.log(gamesObj)
     return gamesObj;
 }
@@ -51,26 +61,26 @@ function possibleGames(currentCubes, limit) {
 
     let gamesObj = gamesArrayToGamesObj(currentCubes);
 
-    Object.keys(gamesObj).forEach((key) => {
-        // check if each obj (game) surpases limit, then if they do take it out
+    Object.keys(gamesObj).forEach((gameId) => {
+        // check if each obj (game) surpases limit, then take it out
 
         // TODO -> fix evaluating each set SEPARATELY
 
-        console.log('\n');
-        console.log('key: ' + key);
-        console.log(`color red for key ${key} = ${gamesObj[key]['red']}`);
-        console.log(`limit for color red = ${limit['red']}`);
-        if ((gamesObj[key]['red'] < limit['red']) &&
-            (gamesObj[key]['green'] < limit['green']) &&
-            (gamesObj[key]['blue'] < limit['blue'])) {
-            games.push({[key]: gamesObj[key]})
-            idSum += +key;
+        // console.log('\n');
+        // console.log('gameId: ' + gameId);
+        // console.log(`color red for gameId ${gameId} = ${gamesObj[gameId]['red']}`);
+        // console.log(`limit for color red = ${limit['red']}`);
+        if ((gamesObj[gameId]['red'] < limit['red']) &&
+            (gamesObj[gameId]['green'] < limit['green']) &&
+            (gamesObj[gameId]['blue'] < limit['blue'])) {
+            games.push({[gameId]: gamesObj[gameId]})
+            idSum += +gameId;
         } 
     });
 
-    console.log('');
-    console.log(games);
-    console.log(`total sum = ${idSum}`)
+    // console.log('');
+    // console.log(games);
+    // console.log(`total sum = ${idSum}`)
 
     return [games, idSum];
 };
