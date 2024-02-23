@@ -25,40 +25,42 @@ function gamesArrayToGamesObj(gamesArray) {
 
     gamesArray.forEach((gameStr, index) => {
         let gameId = gameStr.match(/\d+/)[0];
-        let setsPerGameStr = gameStr.split(': ')[1].split('; '); // array of sets for each game (cubes shown)
+        let setsPerGameStr = gameStr.split(': ')[1].split('; '); // array of sets for each game (cubes shown each set separated by comma)
         setsPerGameStr.forEach((set, index) => {
             // each set needs to be checked against the limit (cubesInBag),
             // but first needs to be formated to compare it
-            let currentSetCubes = {red: 0, blue: 0, green: 0};
-
-
+            let currentSet = set;
+            let currentSetCubes = {red: 0, green: 0, blue: 0};
+            // parse strings and use currentSetCubes as counter for the cubes count
+            if (set.includes(',')){
+                // more than one cube within the set
+                currentSet = set.split(', ');
+                currentSet.forEach((cube) => {
+                    if (cube.includes('red')) {
+                        let numStrOfCube = cube.match(/\d+/)[0];
+                        currentSetCubes['red'] = numStrOfCube;
+                    } else if (cube.includes('green')) {
+                        let numStrOfCube = cube.match(/\d+/)[0];
+                        currentSetCubes['green'] = numStrOfCube;
+                    } else if (cube.includes('blue')) {
+                        let numStrOfCube = cube.match(/\d+/)[0];
+                        currentSetCubes['blue'] = numStrOfCube;
+                    }
+                });
+            } else {
+                let numStrOfCube = currentSet.match(/\d+/)[0];
+                let color = currentSet.match(/(red|green|blue)/)[0];
+                currentSetCubes[color] = numStrOfCube;
+            }
+            // add each set counter to gamesObj[gameId]
             if (!gamesObj[gameId]) {
                 gamesObj[gameId] = {}
             }
-            const cubesPerSet = set.split(', ');
-
-            if (set.includes('red') && set.includes('green') && set.includes('blue')) {
-                gamesObj[gameId][index] = {red: 1}
-            }
-
-            // gamesObj[gameId][index] = cubesPerSet;
-            console.log(`set index = ${index} / set = ${set}`)
-            // cubesPerSet.forEach((cube) => {
-
-            //     console.log(`set = ${set}; cubesperset = ${cubesPerSet}; currentCube = ${cube}; id = ${gameId}`)
-                
-            //     // if (cube.includes('red')) {
-            //     //     gamesObj[gameId] += 0;
-            //     // } else if (cube.includes('green')) {
-            //     //     gamesObj[gameId] += 0;
-            //     // } else if (cube.includes('blue')) {
-            //     //     gamesObj[gameId] += 0;
-            //     // }
-            // });
+            gamesObj[gameId][index] = currentSetCubes
         });
     });
-    console.log(`gamesObj`)
-    console.log(gamesObj)
+    console.log(`gamesObj shown below:`);
+    console.log(gamesObj);
     return gamesObj;
 }
 
@@ -69,29 +71,22 @@ function possibleGames(currentCubes, limit) {
     // Add up the ID's of the possible games
 
     let gamesObj = gamesArrayToGamesObj(currentCubes);
+    // gamesObj is of the following structure:
+    // {
+    //     game1: {
+    //       nSets: { red: numStr | 0, green: numStr | 0, blue: numStr | 0 }
+    //     },
+    //     gameN: {...}
+    // }
 
     Object.keys(gamesObj).forEach((gameId) => {
-        // check if each obj (game) surpases limit, then take it out
+        // check if each game set gamesObj[gameId][set] surpases limit, then take it out
 
-        // TODO -> fix evaluating each set SEPARATELY
+        // TODO -> evaluate each set SEPARATELY
 
-        // console.log('\n');
-        // console.log('gameId: ' + gameId);
-        // console.log(`color red for gameId ${gameId} = ${gamesObj[gameId]['red']}`);
-        // console.log(`limit for color red = ${limit['red']}`);
-        if ((gamesObj[gameId]['red'] < limit['red']) &&
-            (gamesObj[gameId]['green'] < limit['green']) &&
-            (gamesObj[gameId]['blue'] < limit['blue'])) {
-            games.push({[gameId]: gamesObj[gameId]})
-            idSum += +gameId;
-        } 
     });
 
-    // console.log('');
-    // console.log(games);
-    // console.log(`total sum = ${idSum}`)
-
-    return [games, idSum];
+    return [games, idSum]; // games is array with possible games, and idSum their ids summed
 };
 
 possibleGames(testCases, cubesInBag);
