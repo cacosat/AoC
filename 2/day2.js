@@ -21,18 +21,27 @@ function importTestCases(fileName) {
 const testCases = importTestCases('test.txt');
 
 function gamesArrayToGamesObj(gamesArray) {
-    let gamesObj = {}; // resulting structure = {id: {setN: {red: X, green: X, blue: X}}, ...}
+    let gamesObj = {}; // resulting value of converting array of games into an object
 
     gamesArray.forEach((gameStr, index) => {
         let gameId = gameStr.match(/\d+/)[0];
-        // gamesObj[gameId] = {}; // empty object to fit sets of the game
-        let setsPerGame = gameStr.split(':')[1].split(';'); // array of sets for each game (cubes shown)
-        setsPerGame.forEach((set, index) => {
-            const cubesPerSet = set.split(',');
+        let setsPerGameStr = gameStr.split(': ')[1].split('; '); // array of sets for each game (cubes shown)
+        setsPerGameStr.forEach((set, index) => {
+            // each set needs to be checked against the limit (cubesInBag),
+            // but first needs to be formated to compare it
+            let currentSetCubes = {red: 0, blue: 0, green: 0};
+
+
             if (!gamesObj[gameId]) {
                 gamesObj[gameId] = {}
             }
-            gamesObj[gameId][index] = cubesPerSet;
+            const cubesPerSet = set.split(', ');
+
+            if (set.includes('red') && set.includes('green') && set.includes('blue')) {
+                gamesObj[gameId][index] = {red: 1}
+            }
+
+            // gamesObj[gameId][index] = cubesPerSet;
             console.log(`set index = ${index} / set = ${set}`)
             // cubesPerSet.forEach((cube) => {
 
