@@ -71,22 +71,43 @@ function possibleGames(currentCubes, limit) {
     // Add up the ID's of the possible games
 
     let gamesObj = gamesArrayToGamesObj(currentCubes);
-    // gamesObj is of the following structure:
-    // {
-    //     game1: {
-    //       nSets: { red: numStr | 0, green: numStr | 0, blue: numStr | 0 }
-    //     },
-    //     gameN: {...}
-    // }
 
-    Object.keys(gamesObj).forEach((gameId) => {
-        // check if each game set gamesObj[gameId][set] surpases limit, then take it out
+    for (let gameId in gamesObj) { // iterates over games
+        let skipGameId = false;
+        for (let set in gamesObj[gameId]) { // iterates over sets for each gameId
+            // check if each game set (gamesObj[gameId][set] === set) surpases limit[color]
 
-        // TODO -> evaluate each set SEPARATELY
+            // console.log(`red cubes for ${gameId} (set ${set}) -> ${gamesObj[gameId][set]['red']}, red limit -> ${limit['red']}`);
+            // console.log(`${gamesObj[gameId][set]['red'] < limit['red'] &&
+            // gamesObj[gameId][set]['green'] < limit['green'] &&
+            // gamesObj[gameId][set]['blue'] < limit['blue']}`)
+            // console.log(`green cubes for ${gameId} (set ${set}) -> ${gamesObj[gameId][set]['green']}, green limit -> ${limit['green']}`);
+            // console.log(`${gamesObj[gameId][set]['red'] < limit['red'] &&
+            // gamesObj[gameId][set]['green'] < limit['green'] &&
+            // gamesObj[gameId][set]['blue'] < limit['blue']}`)
+            // console.log(`blue cubes for ${gameId} (set ${set}) -> ${gamesObj[gameId][set]['blue']}, blue limit -> ${limit['blue']}`);
+            // console.log(`${gamesObj[gameId][set]['red'] < limit['red'] &&
+            // gamesObj[gameId][set]['green'] < limit['green'] &&
+            // gamesObj[gameId][set]['blue'] < limit['blue']}`)
 
-    });
-
-    return [games, idSum]; // games is array with possible games, and idSum their ids summed
+            if (!(gamesObj[gameId][set]['red'] < limit['red'] &&
+                gamesObj[gameId][set]['green'] < limit['green'] &&
+                gamesObj[gameId][set]['blue'] < limit['blue'])) {
+                    delete gamesObj[gameId];
+                    skipGameId = true;
+                    break;
+                    // console.log(`admissible ${gameId}`)
+                    // console.log(gamesObj[gameId]);
+                };
+        };
+        if (skipGameId) {
+            continue;
+        }
+    };
+    idSum = Object.keys(gamesObj).reduce((accumulator, currentId) => accumulator + +currentId, idSum)
+    return [gamesObj, idSum]; // games is array with possible games, and idSum their ids summed
 };
 
-possibleGames(testCases, cubesInBag);
+let [possibleGamesObj, totalSumPossibleGamesIds] = possibleGames(testCases, cubesInBag);
+console.log(Object.keys(possibleGamesObj))
+console.log(totalSumPossibleGamesIds)
