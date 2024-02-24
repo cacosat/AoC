@@ -59,8 +59,8 @@ function gamesArrayToGamesObj(gamesArray) {
             gamesObj[gameId][index] = currentSetCubes
         });
     });
-    console.log(`gamesObj shown below:`);
-    console.log(gamesObj);
+    // console.log(`gamesObj shown below:`);
+    // console.log(gamesObj);
     return gamesObj;
 }
 
@@ -90,9 +90,9 @@ function possibleGames(currentCubes, limit) {
             // gamesObj[gameId][set]['green'] < limit['green'] &&
             // gamesObj[gameId][set]['blue'] < limit['blue']}`)
 
-            if (!(gamesObj[gameId][set]['red'] < limit['red'] &&
-                gamesObj[gameId][set]['green'] < limit['green'] &&
-                gamesObj[gameId][set]['blue'] < limit['blue'])) {
+            if (!(gamesObj[gameId][set]['red'] <= limit['red'] &&
+                gamesObj[gameId][set]['green'] <= limit['green'] &&
+                gamesObj[gameId][set]['blue'] <= limit['blue'])) {
                     delete gamesObj[gameId];
                     skipGameId = true;
                     break;
